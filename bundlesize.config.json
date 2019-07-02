@@ -1,0 +1,9 @@
+{
+  "files": [
+    {
+      "path": "dist/chrome/*.js",
+      "maxSize": "4 MB",
+      "compression": "none"
+    }
+  ]
+}
