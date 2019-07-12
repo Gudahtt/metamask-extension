@@ -114,7 +114,7 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: npm run dist
+          command: NODE_OPTIONS=--max_old_space_size=3072 npm run dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -152,7 +152,7 @@ jobs:
           command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
       - run:
           name: Build for integration tests
-          command: npm run test:integration:build
+          command: NODE_OPTIONS=--max_old_space_size=3072 npm run test:integration:build
       - persist_to_workspace:
           root: .
           paths:
@@ -192,7 +192,7 @@ jobs:
           at: .
       - run:
           name: test:e2e:chrome
-          command: npm run build:test && npm run test:e2e:chrome
+          command: NODE_OPTIONS=--max_old_space_size=3072 npm run build:test && npm run test:e2e:chrome
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
@@ -210,7 +210,7 @@ jobs:
           at: .
       - run:
           name: test:e2e:firefox
-          command: npm run build:test && npm run test:e2e:chrome
+          command: NODE_OPTIONS=--max_old_space_size=3072 npm run build:test && npm run test:e2e:chrome
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
