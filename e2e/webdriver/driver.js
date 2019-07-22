@@ -52,6 +52,10 @@ class Driver {
   delay (time) {
     return new Promise(resolve => setTimeout(resolve, time))
   }
+
+  async executeScript (script) {
+    return this.driver.executeScript(script)
+  }
 }
 
 module.exports = Driver
