@@ -43,6 +43,7 @@ function reduceMetamask (state, action) {
     coinOptions: {},
     useBlockie: false,
     featureFlags: {},
+    network: 'loading',
     networkEndpointType: OLD_UI_NETWORK_TYPE,
     isRevealingSeedWords: false,
     welcomeScreenSeen: false,
