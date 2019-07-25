@@ -339,7 +339,6 @@ Routes.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  toggleAccountMenu: PropTypes.func,
   selectedAddress: PropTypes.string,
   lostAccounts: PropTypes.array,
   isInitialized: PropTypes.bool,
@@ -442,7 +441,6 @@ function mapDispatchToProps (dispatch) {
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
-    toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
   }
