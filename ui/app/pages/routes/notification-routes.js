@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
 import { compose } from 'recompose'
 import actions from '../../store/actions'
-import log from 'loglevel'
 import IdleTimer from 'react-idle-timer'
 import {getMetaMaskAccounts, getNetworkIdentifier, preferencesSelector} from '../../selectors/selectors'
 
@@ -30,10 +29,6 @@ const Modal = require('../../components/app/modals').Modal
 const Alert = require('../../components/ui/alert')
 
 import UnlockPage from '../unlock-page'
-
-import {
-  submittedPendingTransactionsSelector,
-} from '../../selectors/transactions'
 
 // Routes
 import {
@@ -117,13 +112,10 @@ class NotificationRoutes extends Component {
       frequentRpcListDetail,
       currentView,
       setMouseUserState,
-      // sidebar,
-      // submittedPendingTransactions,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
-    log.debug('Main ui render function')
 
     return (
       <div
@@ -230,7 +222,6 @@ NotificationRoutes.propTypes = {
   provider: PropTypes.object,
   frequentRpcListDetail: PropTypes.array,
   currentView: PropTypes.object,
-  sidebar: PropTypes.object,
   alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
   isOnboarding: PropTypes.bool,
@@ -250,7 +241,6 @@ NotificationRoutes.propTypes = {
   activeAddress: PropTypes.string,
   unapprovedTxs: PropTypes.object,
   seedWords: PropTypes.string,
-  submittedPendingTransactions: PropTypes.array,
   unapprovedMsgCount: PropTypes.number,
   unapprovedPersonalMsgCount: PropTypes.number,
   unapprovedTypedMessagesCount: PropTypes.number,
@@ -268,7 +258,6 @@ function mapStateToProps (state) {
   const { appState, metamask } = state
   const {
     networkDropdownOpen,
-    sidebar,
     alertOpen,
     alertMessage,
     isLoading,
@@ -296,7 +285,6 @@ function mapStateToProps (state) {
   return {
     // state from plugin
     networkDropdownOpen,
-    sidebar,
     alertOpen,
     alertMessage,
     isLoading,
@@ -310,7 +298,6 @@ function mapStateToProps (state) {
     isOnboarding: Boolean(seedWords || !isInitialized),
     isPopup: state.metamask.isPopup,
     seedWords: state.metamask.seedWords,
-    submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     unapprovedMsgCount,
