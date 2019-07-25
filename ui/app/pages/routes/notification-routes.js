@@ -21,7 +21,6 @@ import Lock from '../lock'
 const Loading = require('../../components/ui/loading-screen')
 const LoadingNetwork = require('../../components/app/loading-network-screen').default
 const NetworkDropdown = require('../../components/app/dropdowns/network-dropdown')
-import AccountMenu from '../../components/app/account-menu'
 
 // Global Modals
 const Modal = require('../../components/app/modals').Modal
@@ -136,7 +135,6 @@ class NotificationRoutes extends Component {
           provider={provider}
           frequentRpcListDetail={frequentRpcListDetail}
         />
-        <AccountMenu />
         <div className="main-container-wrapper">
           { isLoading && <Loading loadingMessage={loadMessage} /> }
           { !isLoading && isLoadingNetwork && <LoadingNetwork /> }
@@ -233,7 +231,6 @@ NotificationRoutes.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
-  toggleAccountMenu: PropTypes.func,
   selectedAddress: PropTypes.string,
   lostAccounts: PropTypes.array,
   isInitialized: PropTypes.bool,
@@ -332,7 +329,6 @@ function mapDispatchToProps (dispatch) {
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
-    toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
     setLastActiveTime: () => dispatch(actions.setLastActiveTime()),
   }
