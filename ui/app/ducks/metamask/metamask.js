@@ -44,6 +44,7 @@ function reduceMetamask (state, action) {
     useBlockie: false,
     featureFlags: {},
     network: 'loading',
+    suggestedTokens: {},
     networkEndpointType: OLD_UI_NETWORK_TYPE,
     isRevealingSeedWords: false,
     welcomeScreenSeen: false,
