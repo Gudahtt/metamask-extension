@@ -333,7 +333,6 @@ Routes.propTypes = {
   isOnboarding: PropTypes.bool,
   isUnlocked: PropTypes.bool,
   networkDropdownOpen: PropTypes.bool,
-  showNetworkDropdown: PropTypes.func,
   hideNetworkDropdown: PropTypes.func,
   setLastActiveTime: PropTypes.func,
   history: PropTypes.object,
@@ -438,7 +437,6 @@ function mapDispatchToProps (dispatch) {
   return {
     dispatch,
     hideSidebar: () => dispatch(actions.hideSidebar()),
-    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),

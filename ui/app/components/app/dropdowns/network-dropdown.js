@@ -47,7 +47,6 @@ function mapDispatchToProps (dispatch) {
     delRpcTarget: (target) => {
       dispatch(actions.delRpcTarget(target))
     },
-    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setNetworksTabAddMode: isInAddMode => dispatch(actions.setNetworksTabAddMode(isInAddMode)),
   }
