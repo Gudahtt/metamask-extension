@@ -46,7 +46,6 @@ function reduceMetamask (state, action) {
     network: 'loading',
     suggestedTokens: {},
     networkEndpointType: OLD_UI_NETWORK_TYPE,
-    isRevealingSeedWords: false,
     welcomeScreenSeen: false,
     currentLocale: '',
     preferences: {
@@ -61,13 +60,6 @@ function reduceMetamask (state, action) {
   }, state.metamask)
 
   switch (action.type) {
-
-    case actions.SHOW_ACCOUNTS_PAGE:
-      newState = extend(metamaskState, {
-        isRevealingSeedWords: false,
-      })
-      delete newState.seedWords
-      return newState
 
     case actions.UPDATE_METAMASK_STATE:
       return extend(metamaskState, action.value)
@@ -130,20 +122,12 @@ function reduceMetamask (state, action) {
         },
       })
 
-
-    case actions.SHOW_NEW_VAULT_SEED:
-      return extend(metamaskState, {
-        isRevealingSeedWords: true,
-        seedWords: action.value,
-      })
-
     case actions.CLEAR_SEED_WORD_CACHE:
       newState = extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
         selectedAddress: action.value,
       })
-      delete newState.seedWords
       return newState
 
     case actions.SHOW_ACCOUNT_DETAIL:
@@ -152,7 +136,6 @@ function reduceMetamask (state, action) {
         isInitialized: true,
         selectedAddress: action.value,
       })
-      delete newState.seedWords
       return newState
 
     case actions.SET_SELECTED_TOKEN:
