@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import actions from '../../store/actions'
 import IdleTimer from 'react-idle-timer'
@@ -39,7 +39,6 @@ import {
   SEND_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  INITIALIZE_UNLOCK_ROUTE,
 } from '../../helpers/constants/routes'
 
 class NotificationRoutes extends Component {
@@ -90,21 +89,6 @@ class NotificationRoutes extends Component {
     return routes
   }
 
-  onInitializationUnlockPage () {
-    const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: INITIALIZE_UNLOCK_ROUTE, exact: true }))
-  }
-
-  onConfirmPage () {
-    const { location } = this.props
-    return Boolean(matchPath(location.pathname, { path: CONFIRM_TRANSACTION_ROUTE, exact: false }))
-  }
-
-  hasProviderRequests () {
-    const { providerRequests } = this.props
-    return Array.isArray(providerRequests) && providerRequests.length > 0
-  }
-
   render () {
     const {
       isLoading,
@@ -148,18 +132,6 @@ class NotificationRoutes extends Component {
     )
   }
 
-  toggleMetamaskActive () {
-    if (!this.props.isUnlocked) {
-      // currently inactive: redirect to password box
-      var passwordBox = document.querySelector('input[type=password]')
-      if (!passwordBox) return
-      passwordBox.focus()
-    } else {
-      // currently active: deactivate
-      this.props.dispatch(actions.lockMetamask(false))
-    }
-  }
-
   getConnectingLabel = function (loadingMessage) {
     if (loadingMessage) {
       return loadingMessage
@@ -183,31 +155,6 @@ class NotificationRoutes extends Component {
       name = this.context.t('connectingToGoerli')
     } else {
       name = this.context.t('connectingTo', [providerId])
-    }
-
-    return name
-  }
-
-  getNetworkName () {
-    const { provider } = this.props
-    const providerName = provider.type
-
-    let name
-
-    if (providerName === 'mainnet') {
-      name = this.context.t('mainnet')
-    } else if (providerName === 'ropsten') {
-      name = this.context.t('ropsten')
-    } else if (providerName === 'kovan') {
-      name = this.context.t('kovan')
-    } else if (providerName === 'rinkeby') {
-      name = this.context.t('rinkeby')
-    } else if (providerName === 'localhost') {
-      name = this.context.t('localhost')
-    } else if (providerName === 'goerli') {
-      name = this.context.t('goerli')
-    } else {
-      name = this.context.t('unknownNetwork')
     }
 
     return name
