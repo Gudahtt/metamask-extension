@@ -13,7 +13,7 @@ const withFixtures = async function load (fixturesDirectory, callback) {
   await rc.tick(async () => {
     const browser = String(process.env.BROWSER || 'firefox')
     const extensionPath = path.resolve(__dirname, `../dist/${browser}`)
-    const {driver, ganache} = await fixtureServer.loadState(fixturesDirectory, async ({ganacheOptions}) => {
+    const {driver, ganache, extensionUrl} = await fixtureServer.loadState(fixturesDirectory, async ({ganacheOptions}) => {
       const ganache = new Ganache()
       await ganache.start(ganacheOptions)
       const {driver, extensionUrl} = await buildWebDriver({
@@ -21,16 +21,15 @@ const withFixtures = async function load (fixturesDirectory, callback) {
         extensionPath,
       })
 
-      await driver.get(extensionUrl)
-
       return {
         driver,
         ganache,
+        extensionUrl,
       }
     })
     await callback({
       ganache,
-      driver: new Driver(driver),
+      driver: new Driver(driver, extensionUrl),
     })
     await driver.quit()
     await ganache.quit()

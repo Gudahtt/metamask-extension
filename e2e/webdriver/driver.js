@@ -5,9 +5,22 @@ class Driver {
    * @param {!ThenableWebDriver} driver a {@code WebDriver} instance
    * @param {number} timeout
    */
-  constructor (driver, timeout = 10000) {
+  constructor (driver, extensionUrl, timeout = 10000) {
     this.driver = driver
+    this.extensionUrl = extensionUrl
     this.timeout = timeout
+  }
+
+  getHome () {
+    return this.driver.get(`${this.extensionUrl}/home.html`)
+  }
+
+  getNotification () {
+    return this.driver.get(`${this.extensionUrl}/notification.html`)
+  }
+
+  getPopup () {
+    return this.driver.get(`${this.extensionUrl}/popup.html`)
   }
 
   /**

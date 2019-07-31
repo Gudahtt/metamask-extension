@@ -4,6 +4,7 @@ const {withFixtures} = require('../../')
 describe('MetaMask Browser Extension', function () {
   it('can send a simple transaction from one account to another', async () => {
     await withFixtures('simple-send', async ({driver}) => {
+      await driver.getHome()
       await driver.findElement('#password').sendKeys('password')
       await driver.findElement('#password').sendKeys(Key.ENTER)
       await driver.clickElement('#app-content > div > div.main-container-wrapper > div > div > div.transaction-view > div.transaction-view__balance-wrapper > div > div.transaction-view-balance__buttons > button:nth-child(2)')

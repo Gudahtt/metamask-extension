@@ -19,7 +19,7 @@ class ChromeDriver {
 
     return {
       driver,
-      extensionUrl: `chrome-extension://${extensionId}/home.html`,
+      extensionUrl: `chrome-extension://${extensionId}`,
     }
   }
 
