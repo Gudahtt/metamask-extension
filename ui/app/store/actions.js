@@ -1802,24 +1802,19 @@ function retryTransaction (txId, gasPrice) {
 
 function createCancelTransaction (txId, customGasPrice) {
   log.debug('background.cancelTransaction')
-  let newTxId
 
-  return dispatch => {
-    return new Promise((resolve, reject) => {
-      background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
 
-        const { selectedAddressTxList } = newState
-        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
-        newTxId = id
-        resolve(newState)
-      })
-    })
-      .then(newState => dispatch(actions.updateMetamaskState(newState)))
-      .then(() => newTxId)
+  return async dispatch => {
+    try {
+      const newState = await pify(background.createCancelTransaction).call(background, txId, customGasPrice)
+      const { selectedAddressTxList } = newState
+      const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+      dispatch(actions.updateMetamaskState(newState))
+      return id
+    } catch (error) {
+      dispatch(actions.displayWarning(error.message))
+      throw error
+    }
   }
 }
 
