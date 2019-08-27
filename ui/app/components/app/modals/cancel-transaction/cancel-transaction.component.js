@@ -21,6 +21,14 @@ export default class CancelTransaction extends PureComponent {
     busy: false,
   }
 
+  componentDidMount () {
+    this._mounted = true
+  }
+
+  componentWillUnmount () {
+    this._mounted = false
+  }
+
   componentDidUpdate () {
     const { transactionStatus, showTransactionConfirmedModal } = this.props
 
@@ -36,7 +44,9 @@ export default class CancelTransaction extends PureComponent {
     this.setState({ busy: true })
 
     await createCancelTransaction()
-    this.setState({ busy: false }, () => hideModal())
+    if (this._mounted) {
+      this.setState({ busy: false }, () => hideModal())
+    }
   }
 
   handleCancel = () => {
