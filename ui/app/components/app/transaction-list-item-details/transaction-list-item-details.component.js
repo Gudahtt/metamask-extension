@@ -48,17 +48,17 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   handleCancel = event => {
-    const { transactionGroup: { initialTransaction: { id } = {} } = {}, onCancel } = this.props
+    const { onCancel } = this.props
 
     event.stopPropagation()
-    onCancel(id)
+    onCancel()
   }
 
   handleRetry = event => {
-    const { transactionGroup: { initialTransaction: { id } = {} } = {}, onRetry } = this.props
+    const { onRetry } = this.props
 
     event.stopPropagation()
-    onRetry(id)
+    onRetry()
   }
 
   handleCopyTxId = () => {
