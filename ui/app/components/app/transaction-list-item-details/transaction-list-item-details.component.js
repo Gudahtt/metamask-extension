@@ -133,7 +133,7 @@ export default class TransactionListItemDetails extends PureComponent {
     return (
       <div className="transaction-list-item-details">
         <div className="transaction-list-item-details__header">
-          <div>{ t('details') }</div>
+          <div>{ t('details') + `, nonce: ${transactionGroup.nonce}, primaryId: ${(transaction || {}).id}, initialId: ${((transactionGroup || {}).initialTransaction || {}).id}`}</div>
           <div className="transaction-list-item-details__header-buttons">
             {
               showRetry && (

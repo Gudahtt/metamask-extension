@@ -50,7 +50,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restStateProps,
     ...restDispatchProps,
     ...ownProps,
-    createCancelTransaction: () => createCancelTransaction(transactionId, defaultNewGasPrice),
+    createCancelTransaction: () => {
+      console.log(`Cancelling! ${transactionId}, price: ${defaultNewGasPrice}`)
+      createCancelTransaction(transactionId, defaultNewGasPrice)
+    },
   }
 }
 

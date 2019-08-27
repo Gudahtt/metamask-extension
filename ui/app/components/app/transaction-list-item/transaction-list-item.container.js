@@ -64,6 +64,7 @@ const mapDispatchToProps = dispatch => {
       }))
     },
     showCancelModal: (transactionId, originalGasPrice) => {
+      console.log(`Showing cancel modal for ${transactionId}`)
       return dispatch(showModal({ name: 'CANCEL_TRANSACTION', transactionId, originalGasPrice }))
     },
   }

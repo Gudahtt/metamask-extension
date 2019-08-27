@@ -302,6 +302,7 @@ class TransactionController extends EventEmitter {
     })
 
     this.addTx(newTxMeta)
+    console.log(`cancel, original: ${originalTxId}, gas: ${customGasPrice}, new: ${newTxMeta.id}`)
     await this.approveTransaction(newTxMeta.id)
     return newTxMeta
   }
