@@ -9,40 +9,61 @@ workflows:
             branches:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
-      - prep-deps
+      - prep-deps-secure:
+          filters:
+            branches:
+              only:
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
+                - master
+      - prep-deps:
+          filters:
+            branches:
+              ignore:
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
+                - master
       - test-deps
       - prep-build:
           requires:
             - prep-deps
+            - prep-deps-secure
       # - prep-docs:
       #    requires:
       #      - prep-deps
+      #      - prep-deps-secure
       - prep-scss:
           requires:
             - prep-deps
+            - prep-deps-secure
       - test-lint:
           requires:
             - prep-deps
+            - prep-deps-secure
       - test-e2e-chrome:
           requires:
             - prep-deps
+            - prep-deps-secure
       - test-e2e-firefox:
           requires:
             - prep-deps
+            - prep-deps-secure
       - test-unit:
           requires:
             - prep-deps
+            - prep-deps-secure
       - test-mozilla-lint:
           requires:
             - prep-deps
+            - prep-deps-secure
             - prep-build
       - test-integration-flat-chrome:
           requires:
             - prep-deps
+            - prep-deps-secure
             - prep-scss
       - test-integration-flat-firefox:
           requires:
             - prep-deps
+            - prep-deps-secure
             - prep-scss
       - all-tests-pass:
           requires:
@@ -56,6 +77,7 @@ workflows:
       - job-publish-prerelease:
           requires:
             - prep-deps
+            - prep-deps-secure
             - prep-build
             - all-tests-pass
       - job-publish-release:
@@ -64,6 +86,7 @@ workflows:
               only: master
           requires:
             - prep-deps
+            - prep-deps-secure
             - prep-build
       #       - prep-docs
             - all-tests-pass
@@ -85,6 +108,20 @@ jobs:
             .circleci/scripts/release-create-release-pr
 
   prep-deps:
+    docker:
+      - image: circleci/node:10.16-browsers
+    steps:
+      - checkout
+      - run:
+          name: Download deps
+          command: |
+           yarn --frozen-lockfile
+      - persist_to_workspace:
+          root: .
+          paths:
+          - node_modules
+
+  prep-deps-secure:
     docker:
       - image: circleci/node:10.16-browsers
     steps:
