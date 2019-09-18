@@ -12,7 +12,10 @@
 
 const fs = require('fs')
 const path = require('path')
+const { promisify } = require('util')
 const localeIndex = require('../app/_locales/index.json')
+const readdir = promisify(fs.readdir)
+const readFile = promisify(fs.readFile)
 
 console.log('Locale Verification')
 
@@ -31,19 +34,7 @@ if (specifiedLocale) {
 
 
 function verifyLocale ({ code, name }) {
-  let targetLocale, englishLocale
-  try {
-    const localeFilePath = path.join(process.cwd(), 'app', '_locales', code, 'messages.json')
-    targetLocale = JSON.parse(fs.readFileSync(localeFilePath, 'utf8'))
-  } catch (e) {
-    if (e.code === 'ENOENT') {
-      console.log('Locale file not found')
-    } else {
-      console.log(`Error opening your locale ("${code}") file: `, e)
-    }
-    process.exit(1)
-  }
-
+  let englishLocale
   try {
     const englishFilePath = path.join(process.cwd(), 'app', '_locales', 'en', 'messages.json')
     englishLocale = JSON.parse(fs.readFileSync(englishFilePath, 'utf8'))
@@ -52,6 +43,23 @@ function verifyLocale ({ code, name }) {
       console.log('English File not found')
     } else {
       console.log('Error opening english locale file: ', e)
+    }
+    process.exit(1)
+  }
+
+  if (code === 'en') {
+    return verifyEnglishLocale(englishLocale)
+  }
+
+  let targetLocale
+  try {
+    const localeFilePath = path.join(process.cwd(), 'app', '_locales', code, 'messages.json')
+    targetLocale = JSON.parse(fs.readFileSync(localeFilePath, 'utf8'))
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      console.log('Locale file not found')
+    } else {
+      console.log(`Error opening your locale ("${code}") file: `, e)
     }
     process.exit(1)
   }
@@ -87,7 +95,57 @@ function verifyLocale ({ code, name }) {
   if (!extraItems.length && !missingItems.length) {
     console.log('Full coverage  : )')
   }
+
+  if (extraItems.length > 0) {
+    process.exit(1)
+  }
 }
+
+async function verifyEnglishLocale (englishLocale) {
+  const javascriptFiles = await findJavascriptFiles(path.resolve(__dirname, '..', 'ui'))
+
+  let remainingKeys = Object.keys(englishLocale)
+  for await (const fileContents of getFileContents(javascriptFiles)) {
+    remainingKeys = remainingKeys
+      .filter(key => !fileContents.includes(`t('${key}'`))
+    if (remainingKeys.length === 0) {
+      break
+    }
+  }
+
+  console.log(`Status of **English (en)** ${remainingKeys.length} unused messages:`)
+
+  if (remainingKeys.length === 0) {
+    console.log('Full coverage  : )')
+    process.exit(0)
+  }
+
+  console.log(`\nMessages not present in UI:`)
+  remainingKeys.forEach(function (key) {
+    console.log(`  - [ ] ${key}`)
+  })
+  process.exit(1)
+}
+
+async function findJavascriptFiles (rootDir) {
+  const javascriptFiles = []
+  const contents = await readdir(rootDir, { withFileTypes: true })
+  for (const file of contents) {
+    if (file.isDirectory()) {
+      javascriptFiles.push(...(await findJavascriptFiles(path.join(rootDir, file.name))))
+    } else if (file.isFile() && file.name.endsWith('.js')) {
+      javascriptFiles.push(path.join(rootDir, file.name))
+    }
+  }
+  return javascriptFiles
+}
+
+async function * getFileContents (filenames) {
+  for (const filename of filenames) {
+    yield readFile(filename, 'utf8')
+  }
+}
+
 
 function compareLocalesForMissingItems ({ base, subject }) {
   return Object.keys(base).filter((key) => !subject[key])
