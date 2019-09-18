@@ -15,11 +15,15 @@ export default class GasModalPageContainer extends Component {
     hideBasic: PropTypes.bool,
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
+    currentTimeEstimate: PropTypes.string,
     customGasPrice: PropTypes.number,
     customGasLimit: PropTypes.number,
+    insufficientBalance: PropTypes.bool,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
     gasPriceButtonGroupProps: PropTypes.object,
+    gasChartProps: PropTypes.object,
+    gasEstimatesLoading: PropTypes.bool,
     infoRowProps: PropTypes.shape({
       originalTotalFiat: PropTypes.string,
       originalTotalEth: PropTypes.string,
@@ -63,30 +67,32 @@ export default class GasModalPageContainer extends Component {
     )
   }
 
-  renderAdvancedTabContent ({
-    convertThenUpdateCustomGasPrice,
-    convertThenUpdateCustomGasLimit,
-    customGasPrice,
-    customGasLimit,
-    newTotalFiat,
-    gasChartProps,
-    currentTimeEstimate,
-    insufficientBalance,
-    gasEstimatesLoading,
-    customPriceIsSafe,
-    isSpeedUp,
-    transactionFee,
-    isEthereumNetwork,
-  }) {
+  renderAdvancedTabContent () {
+    const {
+      updateCustomGasPrice,
+      updateCustomGasLimit,
+      customModalGasPriceInHex,
+      customModalGasLimitInHex,
+      gasChartProps,
+      currentTimeEstimate,
+      insufficientBalance,
+      gasEstimatesLoading,
+      customPriceIsSafe,
+      isSpeedUp,
+      infoRowProps: {
+        transactionFee,
+      },
+      isEthereumNetwork,
+    } = this.props
+
     return (
       <AdvancedTabContent
-        updateCustomGasPrice={convertThenUpdateCustomGasPrice}
-        updateCustomGasLimit={convertThenUpdateCustomGasLimit}
-        customGasPrice={customGasPrice}
-        customGasLimit={customGasLimit}
+        updateCustomGasPrice={updateCustomGasPrice}
+        updateCustomGasLimit={updateCustomGasLimit}
+        customModalGasPriceInHex={customModalGasPriceInHex}
+        customModalGasLimitInHex={customModalGasLimitInHex}
         timeRemaining={currentTimeEstimate}
         transactionFee={transactionFee}
-        totalFee={newTotalFiat}
         gasChartProps={gasChartProps}
         insufficientBalance={insufficientBalance}
         gasEstimatesLoading={gasEstimatesLoading}
@@ -121,20 +127,27 @@ export default class GasModalPageContainer extends Component {
     )
   }
 
-  renderTabs ({
-    newTotalFiat,
-    newTotalEth,
-    sendAmount,
-    transactionFee,
-  },
-  {
-    gasPriceButtonGroupProps,
-    hideBasic,
-    ...advancedTabProps
-  }) {
+  renderTabs () {
+    const {
+      gasPriceButtonGroupProps,
+      hideBasic,
+      infoRowProps: {
+        newTotalFiat,
+        newTotalEth,
+        sendAmount,
+        transactionFee,
+      },
+    } = this.props
+
     let tabsToRender = [
-      { name: 'basic', content: this.renderBasicTabContent(gasPriceButtonGroupProps) },
-      { name: 'advanced', content: this.renderAdvancedTabContent({ transactionFee, ...advancedTabProps }) },
+      {
+        name: this.context.t('basic'),
+        content: this.renderBasicTabContent(gasPriceButtonGroupProps),
+      },
+      {
+        name: this.context.t('advanced'),
+        content: this.renderAdvancedTabContent(),
+      },
     ]
 
     if (hideBasic) {
@@ -143,7 +156,7 @@ export default class GasModalPageContainer extends Component {
 
     return (
       <Tabs>
-        {tabsToRender.map(({ name, content }, i) => <Tab name={this.context.t(name)} key={`gas-modal-tab-${i}`}>
+        {tabsToRender.map(({ name, content }, i) => <Tab name={name} key={`gas-modal-tab-${i}`}>
           <div className="gas-modal-content">
             { content }
             { this.renderInfoRows(newTotalFiat, newTotalEth, sendAmount, transactionFee) }
@@ -157,12 +170,10 @@ export default class GasModalPageContainer extends Component {
   render () {
     const {
       cancelAndClose,
-      infoRowProps,
       onSubmit,
       customModalGasPriceInHex,
       customModalGasLimitInHex,
       disableSave,
-      ...tabProps
     } = this.props
 
     return (
@@ -170,7 +181,7 @@ export default class GasModalPageContainer extends Component {
         <PageContainer
           title={this.context.t('customGas')}
           subtitle={this.context.t('customGasSubTitle')}
-          tabsComponent={this.renderTabs(infoRowProps, tabProps)}
+          tabsComponent={this.renderTabs()}
           disabled={disableSave}
           onCancel={() => cancelAndClose()}
           onClose={() => cancelAndClose()}

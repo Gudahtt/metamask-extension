@@ -3,21 +3,15 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import debounce from 'lodash.debounce'
 
-export default class AdvancedTabContent extends Component {
+const GAS_EDIT_TYPE = {
+  GAS_PRICE: 'GAS_PRICE',
+  GAS_LIMIT: 'GAS_LIMIT',
+}
+
+export default class AdvancedGasInputs extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      gasPrice: this.props.customGasPrice,
-      gasLimit: this.props.customGasLimit,
-    }
-    this.changeGasPrice = debounce(this.changeGasPrice, 500)
-    this.changeGasLimit = debounce(this.changeGasLimit, 500)
-  }
-
 
   static propTypes = {
     updateCustomGasPrice: PropTypes.func,
@@ -29,6 +23,16 @@ export default class AdvancedTabContent extends Component {
     isSpeedUp: PropTypes.bool,
     showGasPriceInfoModal: PropTypes.func,
     showGasLimitInfoModal: PropTypes.func,
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      gasPrice: this.props.customGasPrice,
+      gasLimit: this.props.customGasLimit,
+    }
+    this.changeGasPrice = debounce(this.changeGasPrice, 500)
+    this.changeGasLimit = debounce(this.changeGasLimit, 500)
   }
 
   componentDidUpdate (prevProps) {
@@ -67,7 +71,7 @@ export default class AdvancedTabContent extends Component {
     this.props.updateCustomGasPrice(Number(e.target.value))
   }
 
-  gasInputError ({ labelKey, insufficientBalance, customPriceIsSafe, isSpeedUp, value }) {
+  gasInputError ({ type, insufficientBalance, customPriceIsSafe, isSpeedUp, value }) {
     const { t } = this.context
     let errorText
     let errorType
@@ -77,10 +81,10 @@ export default class AdvancedTabContent extends Component {
     if (insufficientBalance) {
       errorText = t('insufficientBalance')
       errorType = 'error'
-    } else if (labelKey === 'gasPrice' && isSpeedUp && value === 0) {
+    } else if (type === GAS_EDIT_TYPE.GAS_PRICE && isSpeedUp && value === 0) {
       errorText = t('zeroGasPriceOnSpeedUpError')
       errorType = 'error'
-    } else if (labelKey === 'gasPrice' && !customPriceIsSafe) {
+    } else if (type === GAS_EDIT_TYPE.GAS_PRICE && !customPriceIsSafe) {
       errorText = t('gasPriceExtremelyLow')
       errorType = 'warning'
     } else {
@@ -94,12 +98,12 @@ export default class AdvancedTabContent extends Component {
     }
   }
 
-  gasInput ({ labelKey, value, onChange, insufficientBalance, customPriceIsSafe, isSpeedUp }) {
+  gasInput ({ type, value, onChange, insufficientBalance, customPriceIsSafe, isSpeedUp }) {
     const {
       isInError,
       errorText,
       errorType,
-    } = this.gasInputError({ labelKey, insufficientBalance, customPriceIsSafe, isSpeedUp, value })
+    } = this.gasInputError({ type, insufficientBalance, customPriceIsSafe, isSpeedUp, value })
 
     return (
       <div className="advanced-gas-inputs__gas-edit-row__input-wrapper">
@@ -143,10 +147,15 @@ export default class AdvancedTabContent extends Component {
   }
 
   renderGasEditRow (gasInputArgs) {
+    const { type } = gasInputArgs
+    const label = type === GAS_EDIT_TYPE.GAS_PRICE ?
+      this.context.t('gasPrice') :
+      this.context.t('gasLimit')
+
     return (
       <div className="advanced-gas-inputs__gas-edit-row">
         <div className="advanced-gas-inputs__gas-edit-row__label">
-          { this.context.t(gasInputArgs.labelKey) }
+          { label }
           { this.infoButton(() => gasInputArgs.infoOnClick()) }
         </div>
         { this.gasInput(gasInputArgs) }
@@ -166,7 +175,7 @@ export default class AdvancedTabContent extends Component {
     return (
       <div className="advanced-gas-inputs__gas-edit-rows">
         { this.renderGasEditRow({
-          labelKey: 'gasPrice',
+          type: GAS_EDIT_TYPE.GAS_PRICE,
           value: this.state.gasPrice,
           onChange: this.onChangeGasPrice,
           insufficientBalance,
@@ -176,7 +185,7 @@ export default class AdvancedTabContent extends Component {
           infoOnClick: showGasPriceInfoModal,
         }) }
         { this.renderGasEditRow({
-          labelKey: 'gasLimit',
+          type: GAS_EDIT_TYPE.GAS_LIMIT,
           value: this.state.gasLimit,
           onChange: this.onChangeGasLimit,
           insufficientBalance,
