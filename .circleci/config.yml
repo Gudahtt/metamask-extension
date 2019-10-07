@@ -8,7 +8,7 @@ workflows:
           filters:
             branches:
               only:
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
+                - /^Version-(\d+)[.](\d+)[.](\d+)/
       - prep-deps
       - test-deps
       - prep-build:
