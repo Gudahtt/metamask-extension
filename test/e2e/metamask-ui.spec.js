@@ -785,7 +785,6 @@ describe('MetaMask', function () {
       await configureGas.click()
       await delay(regularDelayMs)
 
-      const gasModal = await findElement(driver, By.css('span .modal'))
       await delay(regularDelayMs)
       const modalTabs = await findElements(driver, By.css('.page-container__tab'))
       await modalTabs[1].click()
@@ -820,6 +819,7 @@ describe('MetaMask', function () {
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
       await delay(50)
 
+      const gasModal = await findElement(driver, By.css('span .modal'))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
       await delay(regularDelayMs)
