@@ -2,10 +2,9 @@ import React from 'react'
 import assert from 'assert'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
-import { stubComponent } from '../../../../../test/lib/render-helpers'
-import UnlockPage from '../index'
-import Mascot from '../../../components/ui/mascot'
+import proxyquire from 'proxyquire'
 
+proxyquire.noCallThru()
 describe('Unlock Page', () => {
   let wrapper
 
@@ -21,12 +20,13 @@ describe('Unlock Page', () => {
     showOptInModal: sinon.spy(),
   }
 
-  stubComponent(Mascot)
-
   beforeEach(() => {
 
+    const UnlockPage = proxyquire('../unlock-page.component', {
+      '../../components/ui/mascot': () => null,
+    }).default
     wrapper = mount(
-      <UnlockPage.WrappedComponent{...props} />, {
+      <UnlockPage {...props} />, {
         context: {
           t: str => str,
         },
