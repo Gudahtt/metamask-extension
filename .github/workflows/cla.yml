@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "CLA Signature Bot"
-        uses: Gudahtt/cla-signature-bot@v2
+        uses: Gudahtt/cla-signature-bot@v2.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
