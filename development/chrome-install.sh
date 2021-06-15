@@ -20,4 +20,5 @@ sudo sed -i 's|$HERE/chrome"|$HERE/chrome" --disable-setuid-sandbox --no-sandbox
 
 printf '%s\n' "CHROME ${CHROME_VERSION} configured"
 
-sudo apt install -y xvfb
+# Set '/tmp/.X11-unix' to root to silence warning when running xvfb-run
+sudo chown root:root /tmp/.X11-unix
